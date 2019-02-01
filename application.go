@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"github.com/team142/go-arm-stackdriver-temps/gast"
 	"log"
-	"time"
+	"os"
 )
 
 var (
@@ -17,6 +17,7 @@ var (
 )
 
 func main() {
+	sigs := make(chan os.Signal, 1)
 
 	flag.Parse()
 
@@ -32,7 +33,7 @@ func main() {
 	batches := gast.StartAggregator(readings, 1)
 	gast.StartWriter(batches, gast.BuildWriter(*projectID, *deviceID, client, ctx))
 
-	<-time.After(10 * time.Minute)
+	<-sigs
 	stop <- true
 
 	// Closes the client and flushes the data to Stackdriver.
