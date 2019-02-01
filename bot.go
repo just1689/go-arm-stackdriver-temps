@@ -68,6 +68,15 @@ func StartAggregator(in chan int, batchSize int) (out chan []*monitoringpb.Point
 	return
 }
 
+func StartWriter(in chan []*monitoringpb.Point, f func(points []*monitoringpb.Point)) {
+	go func() {
+		for ps := range in {
+			f(ps)
+		}
+	}()
+	return
+}
+
 func convertAndSend(sl []int, out chan []*monitoringpb.Point) {
 	result := make([]*monitoringpb.Point, len(sl))
 	for i, s := range sl {

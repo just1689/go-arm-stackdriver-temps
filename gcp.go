@@ -27,6 +27,12 @@ func makeDataPoint(v int64) (dataPoint *monitoringpb.Point) {
 	return
 }
 
+func buildWriter(client *monitoring.MetricClient, ctx context.Context) func([]*monitoringpb.Point) {
+	return func(lp []*monitoringpb.Point) {
+		write(client, ctx, lp)
+	}
+}
+
 func write(client *monitoring.MetricClient, ctx context.Context, points []*monitoringpb.Point) {
 	if err := client.CreateTimeSeries(ctx, &monitoringpb.CreateTimeSeriesRequest{
 		Name: monitoring.MetricProjectPath(*projectID),
