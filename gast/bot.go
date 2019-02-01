@@ -5,6 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -30,6 +31,7 @@ func StartReader(filename string, f func(string) ([]byte, error), ms int) (reply
 					break
 				}
 				str := string(dat)
+				str = strings.TrimSuffix(str, "\n")
 				i, err := strconv.Atoi(str)
 				if err != nil {
 					logrus.Error(err)
