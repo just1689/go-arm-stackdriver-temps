@@ -28,11 +28,11 @@ func main() {
 		log.Fatalf("Failed to create client: %v", err)
 	}
 
-	readings, stop := gast.StartReader(*filename, gast.ReadFile, 1000)
-	batches := gast.StartAggregator(readings, 10)
+	readings, stop := gast.StartReader(*filename, gast.ReadFile, 60000)
+	batches := gast.StartAggregator(readings, 1)
 	gast.StartWriter(batches, gast.BuildWriter(*projectID, *deviceID, client, ctx))
 
-	time.After(2 * time.Minute)
+	<-time.After(10 * time.Minute)
 	stop <- true
 
 	// Closes the client and flushes the data to Stackdriver.
