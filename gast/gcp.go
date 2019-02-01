@@ -1,4 +1,4 @@
-package main
+package gast
 
 import (
 	"cloud.google.com/go/monitoring/apiv3"
@@ -27,27 +27,27 @@ func makeDataPoint(v int64) (dataPoint *monitoringpb.Point) {
 	return
 }
 
-func buildWriter(client *monitoring.MetricClient, ctx context.Context) func([]*monitoringpb.Point) {
+func BuildWriter(projectID, deviceID string, client *monitoring.MetricClient, ctx context.Context) func([]*monitoringpb.Point) {
 	return func(lp []*monitoringpb.Point) {
-		write(client, ctx, lp)
+		write(projectID, deviceID, client, ctx, lp)
 	}
 }
 
-func write(client *monitoring.MetricClient, ctx context.Context, points []*monitoringpb.Point) {
+func write(projectID, deviceID string, client *monitoring.MetricClient, ctx context.Context, points []*monitoringpb.Point) {
 	if err := client.CreateTimeSeries(ctx, &monitoringpb.CreateTimeSeriesRequest{
-		Name: monitoring.MetricProjectPath(*projectID),
+		Name: monitoring.MetricProjectPath(projectID),
 		TimeSeries: []*monitoringpb.TimeSeries{
 			{
 				Metric: &metricpb.Metric{
 					Type: "custom.googleapis.com/stores/temps",
 					Labels: map[string]string{
-						"device_id": *deviceID,
+						"device_id": deviceID,
 					},
 				},
 				Resource: &monitoredrespb.MonitoredResource{
 					Type: "global",
 					Labels: map[string]string{
-						"project_id": *projectID,
+						"project_id": projectID,
 					},
 				},
 				Points: points,

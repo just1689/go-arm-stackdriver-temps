@@ -1,4 +1,4 @@
-package main
+package gast
 
 import (
 	"bytes"
@@ -6,7 +6,7 @@ import (
 )
 
 func TestReadFile(t *testing.T) {
-	b, err := readFile("temp")
+	b, err := ReadFile("../temp")
 	if err != nil {
 		t.Error(err)
 	}

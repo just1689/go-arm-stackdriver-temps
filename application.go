@@ -5,13 +5,14 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/team142/go-arm-stackdriver-temps/gast"
 	"log"
 	"time"
 )
 
 var (
-	projectID = flag.String("projectid", "", "A GCP project ID")
-	deviceID  = flag.String("deviceid", "", "The label for stackdriver")
+	projectID = flag.String("projectid", "ex-remote-pi", "A GCP project ID")
+	deviceID  = flag.String("deviceid", "desktop", "The label for stackdriver")
 	filename  = flag.String("filename", "temp", "File to read")
 )
 
@@ -27,9 +28,9 @@ func main() {
 		log.Fatalf("Failed to create client: %v", err)
 	}
 
-	readings, stop := StartReader(*filename, readFile, 1000)
-	batches := StartAggregator(readings, 10)
-	StartWriter(batches, buildWriter(client, ctx))
+	readings, stop := gast.StartReader(*filename, gast.ReadFile, 1000)
+	batches := gast.StartAggregator(readings, 10)
+	gast.StartWriter(batches, gast.BuildWriter(*projectID, *deviceID, client, ctx))
 
 	time.After(2 * time.Minute)
 	stop <- true
