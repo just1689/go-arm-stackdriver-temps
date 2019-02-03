@@ -1,4 +1,4 @@
-# Arm Stackdriver Temps
+# Go Arm Stackdriver Temps (gast)
 
 The goal of this project is to submit temperatures of Arm based devices like Raspberry Pis and ODroids to Google Cloud Platform's Stackdriver custom monitoring for alerting and reporting.
 
