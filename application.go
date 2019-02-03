@@ -5,18 +5,30 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/team142/go-arm-stackdriver-temps/gast"
 	"log"
 	"os"
 )
 
 var (
-	projectID = flag.String("projectid", "ex-remote-pi", "A GCP project ID")
-	deviceID  = flag.String("deviceid", "desktop", "The label for stackdriver")
-	filename  = flag.String("filename", "temp", "File to read")
+	projectID = flag.String("projectid", "", "A GCP project ID")
+	deviceID  = flag.String("deviceid", "", "The label for stackdriver")
+	filename  = flag.String("filename", "", "File to read")
 )
 
 func main() {
+
+	if projectID == nil || *projectID == "" {
+		logrus.Fatal("No projectid provided")
+	}
+	if deviceID == nil || *deviceID == "" {
+		logrus.Fatal("No deviceid provided")
+	}
+	if filename == nil || *filename == "" {
+		logrus.Fatal("No filename provided")
+	}
+
 	sigs := make(chan os.Signal, 1)
 
 	flag.Parse()
